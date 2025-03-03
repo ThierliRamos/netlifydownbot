@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo ao DownCrazy</title>
+    <link rel="stylesheet" href="/static/styles.css"> <!-- Link para o CSS -->
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Download de Músicas e Consultas</h1>
+        </div>
+    </header>
+    <main>
+        <section id="outros">
+            <h2 class="centralizado">Nossos Serviços</h2>
+            <div class="service-buttons">
+                <button onclick="location.href='bin.html'"><b>Consultar BIN</b></button>
+                <button onclick="location.href='cpf.html'"><b>Consultar CPF</b></button> <!-- Atualizado -->
+                <button onclick="location.href='tel.html'"><b>Consultar Telefone</b></button>
+                <button onclick="location.href='nome.html'"><b>Consultar Nome</b></button>
+                <button onclick="location.href='ip.html'"><b>Consultar IP</b></button>
+            </div>
+            <p class="download-text">👇🏼 <b>Baixe músicas do YouTube</b> 👇🏼</p>
+            <div class="download-box">
+                <button onclick="consultar"><b>Baixar Músicas</b></button>
+                <button onclick="consultar"><b>Baixar Vídeos</b></button>
+            </div>
+        </section>
+    </main>
+
+
+    <footer>
+        <p>&copy; 2025 DownCrazy. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // Função para simular a consulta
+        function consultar(tipo) {
+            alert('Você selecionou: ' + tipo);
+        }
+    </script>
+</body>
+</html>

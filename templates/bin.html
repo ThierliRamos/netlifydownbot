@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de BIN</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007BFF;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .back-button {
+            background-color: #28a745; /* Cor verde */
+            color: white;            
+            padding: 10px; /* Ajuste para combinar com o estilo dos outros botões */
+            border-radius: 5px;            
+            text-decoration: none; /* Remove sublinhado do link */            
+            font-size: 16px;            
+            margin-bottom: 5px; /* Espaçamento abaixo do botão */            
+            transition: background-color 0.3s;        
+            text-align: center; /* Centraliza o texto */
+            width: 165px; /* Largura fixa */
+        }        
+        .back-button:hover {            
+            background-color: #218838; /* Cor ao passar o mouse */
+        }
+    </style>
+</head>
+<body>
+    <a href="/main" class="back-button">Voltar para o Início</a> <!-- Botão estilizado -->
+    <div class="container">
+        <h1>Consulta de BIN</h1>
+        <div class="input-container">
+            <label for="bin">Digite o BIN:</label>
+            <input type="text" id="bin" placeholder="Ex: 230744">
+        </div>
+        <button onclick="pesquisarBIN()">Consultar</button>
+
+        <div id="result" class="result"></div>
+        <div id="error" class="error"></div>
+    </div>
+
+    <script>
+        function pesquisarBIN() {
+            const bin = document.getElementById('bin').value;
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+
+            // Limpar resultados e erros anteriores
+            resultDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            resultDiv.innerHTML = '';
+            errorDiv.innerHTML = '';
+
+            // Verifica se o BIN está vazio
+            if (!bin) {
+                errorDiv.innerHTML = 'Por favor, insira um BIN.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // URL da API
+            const apiUrl = "https://bin-ip-checker.p.rapidapi.com/";
+            const headers = {
+                "X-RapidAPI-Key": "99bb57d209mshb6ca809dc147a3ep1a51e7jsnf829ae92aef6",  // Chave RapidAPI
+                "X-RapidAPI-Host": "bin-ip-checker.p.rapidapi.com",
+                "Content-Type": "application/json"
+            };
+
+            const payload = JSON.stringify({ bin: bin });
+
+            // Realiza a requisição à API
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: headers,
+                body: payload
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar dados: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.success && data.BIN.valid) {
+                    // Formatar a resposta
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `
+                        📍 <strong>BIN Identificada:</strong> ${data.BIN.number}<br>
+                        💳 <strong>Tipo:</strong> ${data.BIN.type}<br>
+                        📶 <strong>Nível:</strong> ${data.BIN.level}<br>
+                        🏳️ <strong>Bandeira:</strong> ${data.BIN.scheme}<br>
+                        🏦 <strong>Banco:</strong> ${data.BIN.issuer.name}<br>
+                        🌎 <strong>País:</strong> ${data.BIN.country.name} ${data.BIN.country.flag}<br>
+                        💰 <strong>Moeda:</strong> ${data.BIN.currency}<br>
+                        🏠 <strong>Capital:</strong> ${data.BIN.country.capital}
+                    `;
+                } else {
+                    errorDiv.innerHTML = 'BIN não encontrada ou inválida!';
+                    errorDiv.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                errorDiv.innerHTML = 'Erro ao buscar dados. Tente novamente.';
+                errorDiv.style.display = 'block';
+                console.error('Erro ao fazer a requisição:', error);
+            });
+        }
+    </script>
+</body>
+</html>

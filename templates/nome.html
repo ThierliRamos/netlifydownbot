@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa de Nomes</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007BFF;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .error {
+            color: red;
+        }
+        .back-button {
+            background-color: #28a745; /* Cor verde */
+            background-position: center;
+            color: white;            
+            padding: 10px; /* Ajuste para combinar com o estilo dos outros botões */
+            border-radius: 5px;            
+            text-decoration: none; /* Remove sublinhado do link */            
+            font-size: 16px;            
+            margin-bottom: 5px; /* Espaçamento abaixo do botão */            
+            transition: background-color 0.3s;        
+            text-align: center; /* Centraliza o texto */
+            width: 165px; /* Largura fixa */
+        }        
+        .back-button:hover {            
+            background-color: #218838; /* Cor ao passar o mouse */
+        }
+    </style>
+</head>
+<body>
+    <a href="/main" class="back-button">Voltar para o Início</a> <!-- Botão estilizado -->
+    <div class="container">
+        <h1>Pesquisa de Nomes</h1>
+        <div class="input-container">
+            <label for="nome">Digite o nome:</label>
+            <input type="text" id="nome" placeholder="Ex: João">
+        </div>
+        <button onclick="pesquisarNome()">Pesquisar</button>
+
+        <div id="result" class="result"></div>
+        <div id="error" class="error"></div>
+    </div>
+
+    <script>
+        function pesquisarNome() {
+            const nome = document.getElementById('nome').value;
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+
+            // Limpar resultados e erros anteriores
+            resultDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            resultDiv.innerHTML = '';
+            errorDiv.innerHTML = '';
+
+            if (!nome) {
+                errorDiv.innerHTML = 'Por favor, insira um nome.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // URL da API com AllOrigins
+            const corsUrl = 'https://api.allorigins.win/get?url=';
+            const apiUrl = `http://api2.minerdapifoda.xyz:8080/api/nomes?nome=${encodeURIComponent(nome)}`;
+
+            // Realiza a requisição utilizando AllOrigins
+            fetch(corsUrl + encodeURIComponent(apiUrl))
+                .then(response => response.json())
+                .then(data => {
+                    // A resposta da API está dentro de 'contents' quando se usa AllOrigins
+                    const jsonData = JSON.parse(data.contents);
+                    console.log("Resposta da API:", jsonData);
+
+                    if (jsonData && jsonData.Resultado) {
+                        resultDiv.style.display = 'block';
+
+                        // Exibir a resposta bruta diretamente na interface
+                        resultDiv.innerHTML = `<h3>Resultado da Pesquisa para "${nome}":</h3><pre>${jsonData.Resultado}</pre>`;
+                    } else {
+                        errorDiv.innerHTML = 'Nenhum resultado encontrado.';
+                        errorDiv.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    errorDiv.innerHTML = 'Erro ao buscar dados. Tente novamente.';
+                    errorDiv.style.display = 'block';
+                    console.error('Erro ao fazer a requisição:', error);
+                });
+        }
+    </script>
+</body>
+</html>
