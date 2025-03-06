@@ -1,7 +1,3 @@
-   [[redirects]]
-   from = "/"
-   to = "/main.html"
-   status = 200
-
-   domains:
-  - https://br.ilimithiv1.shop/
+   [build]
+     publish = "public"  # Diretório que contém o index.html e main.html
+     functions = "functions"  # Diretório das funções
